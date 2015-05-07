@@ -1,0 +1,6 @@
+com\sabina\examples\springboot\partialresponse\SampleJerseyApplication.class
+com\sabina\examples\springboot\partialresponse\service\Service.class
+com\sabina\examples\springboot\partialresponse\JerseyConfig.class
+com\sabina\examples\springboot\partialresponse\entity\rest\BooksResource.class
+com\sabina\examples\springboot\partialresponse\entity\rest\BookResource.class
+com\sabina\examples\springboot\partialresponse\entity\Book.class
