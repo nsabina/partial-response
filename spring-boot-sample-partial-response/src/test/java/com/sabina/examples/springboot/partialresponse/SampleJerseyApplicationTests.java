@@ -13,8 +13,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import com.sabina.examples.springboot.partialresponse.SampleJerseyApplication;
+import com.sabina.examples.springboot.partialresponse.entity.Book;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SampleJerseyApplication.class)
@@ -28,25 +30,35 @@ public class SampleJerseyApplicationTests {
 	private RestTemplate restTemplate = new TestRestTemplate();
 
 	@Test
-	public void contextLoads() {
+	public void testingGetAll() {
 		ResponseEntity<String> entity = this.restTemplate.getForEntity(
-				"http://localhost:" + this.port + "/hello", String.class);
+				"http://localhost:" + this.port + "/books", String.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 	}
 
 	@Test
-	public void reverse() {
-		ResponseEntity<String> entity = this.restTemplate.getForEntity(
-				"http://localhost:" + this.port + "/reverse?input=olleh", String.class);
+	public void testingGetBook() {
+		ResponseEntity<Book> entity = this.restTemplate.getForEntity(
+				"http://localhost:" + this.port + "/books/isbn123", Book.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
-		assertEquals("hello", entity.getBody());
 	}
 
 	@Test
-	public void validation() {
-		ResponseEntity<String> entity = this.restTemplate.getForEntity(
-				"http://localhost:" + this.port + "/reverse", String.class);
-		assertEquals(HttpStatus.BAD_REQUEST, entity.getStatusCode());
+	public void testingGetBookWithFields() {
+		ResponseEntity<Book> entity = this.restTemplate.getForEntity(
+				"http://localhost:" + this.port + "/books/isbn123?fields=isbn,title", Book.class);
+		assertEquals(HttpStatus.OK, entity.getStatusCode());
 	}
+	
+	@Test
+	public void testingGetBookWithObjectField() {
+		ResponseEntity<Book> entity = this.restTemplate.getForEntity(
+				"http://localhost:" + this.port + "/books/isbn123?fields=isbn,title,author.lastName", Book.class);
+		assertEquals(HttpStatus.OK, entity.getStatusCode());
+		assertEquals("isbn123",entity.getBody().getIsbn());
+		assertEquals("Smith",entity.getBody().getAuthor().getLastName());
+		assertNull(entity.getBody().getAuthor().getFirstName());
+	}
+
 
 }
